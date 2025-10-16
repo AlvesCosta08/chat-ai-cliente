@@ -1,0 +1,22 @@
+[
+  {
+    "question": "como redefinir minha senha?",
+    "answer": "Você pode redefinir sua senha acessando a página de login e clicando em 'Esqueci minha senha'. Siga as instruções enviadas ao seu e-mail cadastrado."
+  },
+  {
+    "question": "qual é o prazo de entrega?",
+    "answer": "O prazo de entrega é de até 5 dias úteis para produtos em estoque. Para produtos sob encomenda, o prazo pode variar de 10 a 15 dias úteis."
+  },
+  {
+    "question": "como faço para solicitar troca?",
+    "answer": "Para solicitar uma troca, entre em contato com nosso suporte pelo e-mail contato@seudominio.com.br com o número do pedido e o motivo da troca."
+  },
+  {
+    "question": "vocês oferecem suporte técnico?",
+    "answer": "Sim, nosso suporte técnico está disponível de segunda a sexta, das 9h às 18h, pelo e-mail suporte@seudominio.com.br."
+  },
+  {
+    "question": "quais formas de pagamento vocês aceitam?",
+    "answer": "Aceitamos cartões de crédito, boleto bancário e Pix. Pagamentos podem ser feitos diretamente em nosso site."
+  }
+]

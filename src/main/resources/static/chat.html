@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat de Suporte</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #chat-container {
+            width: 100%;
+            max-width: 500px;
+            height: 600px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        #chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        .user-message {
+            align-self: flex-end;
+            background-color: #007bff;
+            color: white;
+        }
+        .bot-message {
+            align-self: flex-start;
+            background-color: #e9ecef;
+            color: black;
+        }
+        #input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+        #question-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #send-button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #send-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .typing-indicator {
+            align-self: flex-start;
+            background-color: #e9ecef;
+            color: #6c757d;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="chat-messages">
+        <div class="message bot-message">Olá! Como posso te ajudar hoje?</div>
+    </div>
+    <div id="input-area">
+        <input type="text" id="question-input" placeholder="Digite sua pergunta..." />
+        <button id="send-button">Enviar</button>
+    </div>
+</div>
+
+<script>
+    const chatMessages = document.getElementById('chat-messages');
+    const questionInput = document.getElementById('question-input');
+    const sendButton = document.getElementById('send-button');
+
+    // Função para adicionar uma mensagem ao chat
+    function addMessage(text, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+        messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+        messageDiv.textContent = text;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight; // Rola para a última mensagem
+    }
+
+    // Função para mostrar o indicador de digitação
+    function showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.classList.add('typing-indicator');
+        typingDiv.id = 'typing-indicator';
+        typingDiv.textContent = 'Digitando...';
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Função para remover o indicador de digitação
+    function removeTypingIndicator() {
+        const typingElement = document.getElementById('typing-indicator');
+        if (typingElement) {
+            typingElement.remove();
+        }
+    }
+
+    // Função para enviar a pergunta para o backend
+    async function sendQuestion(question) {
+        if (!question.trim()) return;
+
+        addMessage(question, true); // Adiciona mensagem do usuário
+        questionInput.value = ''; // Limpa o input
+        sendButton.disabled = true; // Desabilita o botão
+        showTypingIndicator(); // Mostra o indicador
+
+        try {
+            const response = await fetch('/api/chat/question', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: question })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erro da API: ${response.status}`);
+            }
+
+            const data = await response.json();
+            removeTypingIndicator(); // Remove o indicador
+            addMessage(data.answer); // Adiciona a resposta do bot
+
+        } catch (error) {
+            console.error('Erro ao enviar pergunta:', error);
+            removeTypingIndicator(); // Remove o indicador
+            addMessage('Desculpe, ocorreu um erro ao processar sua pergunta. Tente novamente.');
+        } finally {
+            sendButton.disabled = false; // Reabilita o botão
+        }
+    }
+
+    // Evento de clique no botão
+    sendButton.addEventListener('click', () => {
+        const question = questionInput.value;
+        sendQuestion(question);
+    });
+
+    // Evento de pressionar Enter no input
+    questionInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const question = questionInput.value;
+            sendQuestion(question);
+        }
+    });
+
+    // Foco no input ao carregar a página
+    questionInput.focus();
+</script>
+
+</body>
+</html>
