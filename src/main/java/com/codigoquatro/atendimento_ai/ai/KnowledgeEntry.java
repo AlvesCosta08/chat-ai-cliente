@@ -10,7 +10,9 @@ public class KnowledgeEntry {
     @JsonProperty("answer")
     private String answer;
 
-    public KnowledgeEntry() {}
+    public KnowledgeEntry() {
+        System.out.println("KnowledgeEntry instanciado");
+    }
 
     public KnowledgeEntry(String question, String answer) {
         this.question = question;

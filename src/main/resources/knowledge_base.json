@@ -1,6 +1,34 @@
 [
   {
+    "question": "oi",
+    "answer": "Olá! 😊 Bem-vindo(a) à nossa loja! Como posso te ajudar hoje?"
+  },
+  {
+    "question": "olá",
+    "answer": "Oi! Tudo bem? Estou aqui para ajudar com qualquer dúvida sobre nossos produtos ou pedidos!"
+  },
+  {
+    "question": "bom dia",
+    "answer": "Bom dia! 🌞 Que alegria te ver por aqui! Em que posso te ajudar?"
+  },
+  {
+    "question": "boa tarde",
+    "answer": "Boa tarde! 😊 Espero que seu dia esteja indo bem. Precisa de ajuda com algo?"
+  },
+  {
+    "question": "boa noite",
+    "answer": "Boa noite! 🌙 Obrigado por entrar em contato. Estou aqui para ajudar!"
+  },
+  {
     "question": "como redefinir minha senha?",
+    "answer": "Você pode redefinir sua senha acessando a página de login e clicando em 'Esqueci minha senha'. Siga as instruções enviadas ao seu e-mail cadastrado."
+  },
+  {
+    "question": "esqueci minha senha",
+    "answer": "Você pode redefinir sua senha acessando a página de login e clicando em 'Esqueci minha senha'. Siga as instruções enviadas ao seu e-mail cadastrado."
+  },
+  {
+    "question": "não lembro minha senha",
     "answer": "Você pode redefinir sua senha acessando a página de login e clicando em 'Esqueci minha senha'. Siga as instruções enviadas ao seu e-mail cadastrado."
   },
   {
@@ -8,7 +36,15 @@
     "answer": "O prazo de entrega é de até 5 dias úteis para produtos em estoque. Para produtos sob encomenda, o prazo pode variar de 10 a 15 dias úteis."
   },
   {
+    "question": "quanto tempo demora para entregar?",
+    "answer": "O prazo de entrega é de até 5 dias úteis para produtos em estoque. Para produtos sob encomenda, o prazo pode variar de 10 a 15 dias úteis."
+  },
+  {
     "question": "como faço para solicitar troca?",
+    "answer": "Para solicitar uma troca, entre em contato com nosso suporte pelo e-mail contato@seudominio.com.br com o número do pedido e o motivo da troca."
+  },
+  {
+    "question": "quero trocar um produto",
     "answer": "Para solicitar uma troca, entre em contato com nosso suporte pelo e-mail contato@seudominio.com.br com o número do pedido e o motivo da troca."
   },
   {
@@ -16,7 +52,23 @@
     "answer": "Sim, nosso suporte técnico está disponível de segunda a sexta, das 9h às 18h, pelo e-mail suporte@seudominio.com.br."
   },
   {
+    "question": "preciso de ajuda técnica",
+    "answer": "Sim, nosso suporte técnico está disponível de segunda a sexta, das 9h às 18h, pelo e-mail suporte@seudominio.com.br."
+  },
+  {
     "question": "quais formas de pagamento vocês aceitam?",
     "answer": "Aceitamos cartões de crédito, boleto bancário e Pix. Pagamentos podem ser feitos diretamente em nosso site."
+  },
+  {
+    "question": "aceitam pix?",
+    "answer": "Aceitamos cartões de crédito, boleto bancário e Pix. Pagamentos podem ser feitos diretamente em nosso site."
+  },
+  {
+    "question": "tem promoção?",
+    "answer": "Temos promoções semanais! 🎁 Confira nossa página inicial ou me diga qual produto você procura que eu te ajudo a encontrar algo especial!"
+  },
+  {
+    "question": "quais são as promoções hoje?",
+    "answer": "Temos promoções semanais! 🎁 Confira nossa página inicial ou me diga qual produto você procura que eu te ajudo a encontrar algo especial!"
   }
 ]
