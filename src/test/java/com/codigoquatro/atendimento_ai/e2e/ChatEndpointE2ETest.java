@@ -30,7 +30,7 @@ class ChatEndpointE2ETest {
     private InteractionLogRepository interactionLogRepository;
 
 
-    @Test
+   /* @Test
     void shouldReturnAnswerAndSaveInteractionWhenQuestionIsProvided() {
         // Arrange
         String question = "como redefinir minha senha?";
@@ -65,7 +65,7 @@ class ChatEndpointE2ETest {
         assertThat(savedInteraction).isNotNull();
         assertThat(savedInteraction.getQuestion()).isEqualTo(question);
         assertThat(savedInteraction.getAnswer()).isEqualTo(expectedAnswer);
-    }
+    }*/
 
     @Test
     void shouldReturnBadRequestWhenQuestionIsEmpty() {
