@@ -115,3 +115,7 @@ A base de conhecimento do MVP é definida no arquivo src/main/resources/knowledg
 Contribuições são bem-vindas! Por favor, abra uma issue ou envie um pull request.
 
 Este projeto é um MVP e não está pronto para produção. Ele serve como uma demonstração de conceito e base para desenvolvimento futuro com integração real de IA e RAG.
+
+Teste no ambiente real
+
+https://chat-ai-cliente.onrender.com/chat.html

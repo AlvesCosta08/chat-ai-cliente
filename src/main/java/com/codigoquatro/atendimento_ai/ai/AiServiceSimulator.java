@@ -146,7 +146,7 @@ public class AiServiceSimulator implements AiService {
                     .uri(URI.create("https://openrouter.ai/api/v1/chat/completions")) // <= Corrigido: removido espaço extra
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")
-                    .header("HTTP-Referer", "http://localhost:8080") // opcional
+                    .header("HTTP-Referer", "https://chat-ai-cliente.onrender.com:8080") // opcional
                     .header("X-Title", "Chat Java OpenRouter RAG") // opcional
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
