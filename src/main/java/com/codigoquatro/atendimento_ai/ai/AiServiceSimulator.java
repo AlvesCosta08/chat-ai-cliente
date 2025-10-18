@@ -118,16 +118,14 @@ public class AiServiceSimulator implements AiService {
     private String buildContext(List<KnowledgeEntry> entries, List<Product> products) {
         StringBuilder sb = new StringBuilder();
 
-        // Base de conhecimento institucional
         if (!entries.isEmpty()) {
-            sb.append("ℹ️ Informações institucionais relevantes:\n");
+            sb.append("ℹ️ Informações institucionais:\n");
             for (KnowledgeEntry entry : entries) {
                 sb.append("- ").append(entry.getAnswer()).append("\n");
             }
             sb.append("\n");
         }
 
-        // Produtos da SM Componentes
         if (!products.isEmpty()) {
             sb.append("🔌 **Produtos encontrados na SM Componentes:**\n");
             for (Product p : products) {
@@ -138,9 +136,18 @@ public class AiServiceSimulator implements AiService {
                     p.getProductUrl()
                 ));
             }
+            return sb.toString();
         }
 
-        return sb.length() > 0 ? sb.toString() : "Nenhuma informação específica encontrada.";
+        // Fallback: links das categorias principais
+        sb.append("🔍 **Confira nossas categorias principais:**\n");
+        sb.append("- [Conectores Variados](https://smcomponentes.com.br/loja/categoria-conectores-variados)\n");
+        sb.append("- [Potenciômetros](https://smcomponentes.com.br/loja/categoria-potenciometros)\n");
+        sb.append("- [Áudio e Vídeo](https://smcomponentes.com.br/loja/categoria-audio-e-video)\n");
+        sb.append("- [Acessórios](https://smcomponentes.com.br/loja/categoria-acessorios)\n");
+        // ... outras categorias
+
+        return sb.toString();
     }
 
     private String buildPrompt(String question, String context) {

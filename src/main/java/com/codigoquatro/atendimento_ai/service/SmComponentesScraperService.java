@@ -1,6 +1,5 @@
 package com.codigoquatro.atendimento_ai.service;
 
-
 import com.codigoquatro.atendimento_ai.model.Product;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -58,7 +57,7 @@ public class SmComponentesScraperService {
         for (Map.Entry<String, String> entry : CATEGORY_KEYWORDS.entrySet()) {
             if (normalizedQuery.contains(entry.getKey())) {
                 String fullCategoryUrl = BASE_URL + entry.getValue();
-                results.addAll(scrapeCategoryPage(fullCategoryUrl, normalizedQuery));
+                results.addAll(scrapeCategoryPage(fullCategoryUrl));
                 break;
             }
         }
@@ -70,7 +69,7 @@ public class SmComponentesScraperService {
         return results;
     }
 
-    private List<Product> scrapeCategoryPage(String categoryUrl, String query) {
+    private List<Product> scrapeCategoryPage(String categoryUrl) {
         List<Product> products = new ArrayList<>();
         try {
             logger.debug("Raspando categoria: {}", categoryUrl);
@@ -79,21 +78,25 @@ public class SmComponentesScraperService {
                     .timeout(10000)
                     .get();
 
-            // Seleciona todos os links de produto (que envolvem o <li>)
+            // Seleciona todos os links de produto com classe "link-neutro"
             Elements productLinks = doc.select("a.link-neutro");
 
             for (Element link : productLinks) {
                 String name = link.select(".titulo-item").text().trim();
                 String relativeUrl = link.attr("href");
 
-                if (!name.isEmpty() && !relativeUrl.isEmpty() && name.toLowerCase().contains(query)) {
-                    String fullUrl = BASE_URL + relativeUrl;
+                if (!name.isEmpty() && !relativeUrl.isEmpty()) {
+                    // Corrige URL relativa para absoluta
+                    String fullUrl = relativeUrl.startsWith("http") 
+                        ? relativeUrl 
+                        : BASE_URL + relativeUrl;
+
                     String categoryName = getCategoryNameFromUrl(categoryUrl);
                     products.add(new Product(name, categoryName, fullUrl));
                 }
             }
 
-            logger.info("Encontrados {} produtos para '{}'", products.size(), query);
+            logger.info("Encontrados {} produtos na categoria: {}", products.size(), categoryUrl);
 
         } catch (IOException e) {
             logger.error("Erro ao raspar categoria: {}", categoryUrl, e);
