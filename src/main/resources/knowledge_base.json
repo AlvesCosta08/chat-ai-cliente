@@ -1,74 +1,134 @@
 [
   {
     "question": "oi",
-    "answer": "Olá! 😊 Bem-vindo(a) à nossa loja! Como posso te ajudar hoje?"
+    "answer": "Olá! 😊 Bem-vindo(a) à SM Componentes! Sua loja especializada em componentes eletrônicos. Como posso te ajudar hoje?"
   },
   {
     "question": "olá",
-    "answer": "Oi! Tudo bem? Estou aqui para ajudar com qualquer dúvida sobre nossos produtos ou pedidos!"
+    "answer": "Oi! Tudo bem? Sou o assistente da SM Componentes e estou aqui para ajudar com conectores, cabos, potenciômetros e muito mais!"
   },
   {
     "question": "bom dia",
-    "answer": "Bom dia! 🌞 Que alegria te ver por aqui! Em que posso te ajudar?"
+    "answer": "Bom dia! 🌞 Que alegria te ver na SM Componentes! Precisa de ajuda com componentes eletrônicos?"
   },
   {
     "question": "boa tarde",
-    "answer": "Boa tarde! 😊 Espero que seu dia esteja indo bem. Precisa de ajuda com algo?"
+    "answer": "Boa tarde! 😊 Espero que seu dia esteja produtivo! Em que posso ajudar com nossos componentes eletrônicos?"
   },
   {
     "question": "boa noite",
-    "answer": "Boa noite! 🌙 Obrigado por entrar em contato. Estou aqui para ajudar!"
+    "answer": "Boa noite! 🌙 Obrigado por entrar em contato com a SM Componentes. Estou aqui para ajudar!"
   },
   {
     "question": "como redefinir minha senha?",
-    "answer": "Você pode redefinir sua senha acessando a página de login e clicando em 'Esqueci minha senha'. Siga as instruções enviadas ao seu e-mail cadastrado."
+    "answer": "Você pode redefinir sua senha acessando <a href='https://smcomponentes.com.br/login' target='_blank'>nossa página de login</a> e clicando em 'Esqueci minha senha'. Siga as instruções enviadas ao seu e-mail cadastrado."
   },
   {
     "question": "esqueci minha senha",
-    "answer": "Você pode redefinir sua senha acessando a página de login e clicando em 'Esqueci minha senha'. Siga as instruções enviadas ao seu e-mail cadastrado."
-  },
-  {
-    "question": "não lembro minha senha",
-    "answer": "Você pode redefinir sua senha acessando a página de login e clicando em 'Esqueci minha senha'. Siga as instruções enviadas ao seu e-mail cadastrado."
+    "answer": "Sem problemas! Acesse <a href='https://smcomponentes.com.br/login' target='_blank'>smcomponentes.com.br/login</a> e clique em 'Esqueci minha senha' para redefinição."
   },
   {
     "question": "qual é o prazo de entrega?",
-    "answer": "O prazo de entrega é de até 5 dias úteis para produtos em estoque. Para produtos sob encomenda, o prazo pode variar de 10 a 15 dias úteis."
+    "answer": "🕒 Prazo de entrega: Até 3 dias úteis para SP capital e 5-7 dias para demais regiões. Produtos sob encomenda: 10-15 dias úteis."
   },
   {
     "question": "quanto tempo demora para entregar?",
-    "answer": "O prazo de entrega é de até 5 dias úteis para produtos em estoque. Para produtos sob encomenda, o prazo pode variar de 10 a 15 dias úteis."
+    "answer": "📦 Entregas: SP capital em 3 dias, interior e outros estados 5-7 dias úteis. Confirme o prazo no fechamento do pedido!"
   },
   {
     "question": "como faço para solicitar troca?",
-    "answer": "Para solicitar uma troca, entre em contato com nosso suporte pelo e-mail contato@seudominio.com.br com o número do pedido e o motivo da troca."
+    "answer": "Para trocas, entre em contato com nosso suporte pelo <a href='mailto:suporte@smcomponentes.com.br'>suporte@smcomponentes.com.br</a> ou <a href='https://wa.me/5511999999999' target='_blank'>WhatsApp (11) 99999-9999</a>"
   },
   {
     "question": "quero trocar um produto",
-    "answer": "Para solicitar uma troca, entre em contato com nosso suporte pelo e-mail contato@seudominio.com.br com o número do pedido e o motivo da troca."
+    "answer": "📋 Para trocar um produto, contate nosso suporte: <a href='mailto:suporte@smcomponentes.com.br'>suporte@smcomponentes.com.br</a> | WhatsApp: <a href='https://wa.me/5511999999999' target='_blank'>(11) 99999-9999</a>"
   },
   {
     "question": "vocês oferecem suporte técnico?",
-    "answer": "Sim, nosso suporte técnico está disponível de segunda a sexta, das 9h às 18h, pelo e-mail suporte@seudominio.com.br."
+    "answer": "🔧 Sim! Suporte técnico SM Componentes: Segunda a Sexta, 8h às 18h. Email: <a href='mailto:suporte@smcomponentes.com.br'>suporte@smcomponentes.com.br</a> | WhatsApp: <a href='https://wa.me/5511999999999' target='_blank'>(11) 99999-9999</a>"
   },
   {
     "question": "preciso de ajuda técnica",
-    "answer": "Sim, nosso suporte técnico está disponível de segunda a sexta, das 9h às 18h, pelo e-mail suporte@seudominio.com.br."
+    "answer": "🔌 Precisando de ajuda técnica com componentes? Nosso time especializado está aqui! Horário: Seg-Sex, 8h-18h. Contato: <a href='mailto:suporte@smcomponentes.com.br'>suporte@smcomponentes.com.br</a>"
   },
   {
     "question": "quais formas de pagamento vocês aceitam?",
-    "answer": "Aceitamos cartões de crédito, boleto bancário e Pix. Pagamentos podem ser feitos diretamente em nosso site."
+    "answer": "💳 Aceitamos: Cartões de crédito (até 12x), débito, PIX (5% off), boleto bancário. Tudo seguro pelo nosso site!"
   },
   {
     "question": "aceitam pix?",
-    "answer": "Aceitamos cartões de crédito, boleto bancário e Pix. Pagamentos podem ser feitos diretamente em nosso site."
+    "answer": "💰 Sim! Aceitamos PIX com 5% de desconto! É rápido, seguro e você já sai com desconto na compra."
   },
   {
     "question": "tem promoção?",
-    "answer": "Temos promoções semanais! 🎁 Confira nossa página inicial ou me diga qual produto você procura que eu te ajudo a encontrar algo especial!"
+    "answer": "🎁 Temos promoções toda semana! Confira nossas ofertas em <a href='https://smcomponentes.com.br/promocoes' target='_blank'>smcomponentes.com.br/promocoes</a> ou me diga que componente procura!"
   },
   {
     "question": "quais são as promoções hoje?",
-    "answer": "Temos promoções semanais! 🎁 Confira nossa página inicial ou me diga qual produto você procura que eu te ajudo a encontrar algo especial!"
+    "answer": "🔥 Ofertas da semana! Conectores com 15% off, cabos USB com 20% e potenciômetros em promoção. Veja tudo em: <a href='https://smcomponentes.com.br/promocoes' target='_blank'>smcomponentes.com.br/promocoes</a>"
+  },
+  {
+    "question": "onde fica a loja física",
+    "answer": "🏪 Loja física: Rua dos Componentes, 123 - Centro, São Paulo - SP. Horário: Segunda a Sexta, 8h às 18h | Sábado, 9h às 13h"
+  },
+  {
+    "question": "horário de funcionamento",
+    "answer": "⏰ Horários SM Componentes: Online 24h! Loja física: Seg-Sex 8h-18h, Sáb 9h-13h. Atendimento: Seg-Sex 8h-18h"
+  },
+  {
+    "question": "qual horário de atendimento",
+    "answer": "📞 Atendimento: Segunda a Sexta, 8h às 18h. WhatsApp: <a href='https://wa.me/5511999999999' target='_blank'>(11) 99999-9999</a> | Email: <a href='mailto:contato@smcomponentes.com.br'>contato@smcomponentes.com.br</a>"
+  },
+  {
+    "question": "vocês têm garantia nos produtos",
+    "answer": "🛡️ Todos nossos produtos têm garantia do fabricante! Eletrônicos: 3 meses, Componentes especiais: 6 meses. Consulte condições específicas."
+  },
+  {
+    "question": "garantia dos produtos",
+    "answer": "✅ Garantia SM Componentes: Eletrônicos 3 meses, Componentes 6 meses. Nota fiscal necessária. Dúvidas: <a href='mailto:garantia@smcomponentes.com.br'>garantia@smcomponentes.com.br</a>"
+  },
+  {
+    "question": "como acompanhar meu pedido",
+    "answer": "📮 Acompanhe seu pedido pelo <a href='https://smcomponentes.com.br/meus-pedidos' target='_blank'>seu painel na SM Componentes</a> ou pelo código de rastreio enviado por email."
+  },
+  {
+    "question": "rastrear pedido",
+    "answer": "🚚 Para rastrear: Acesse <a href='https://smcomponentes.com.br/meus-pedidos' target='_blank'>Meus Pedidos</a> ou use o código de rastreio do email de confirmação."
+  },
+  {
+    "question": "qual o valor do frete",
+    "answer": "📦 Frete grátis para compras acima de R$ 150 em SP! Demais regiões: calculado no fechamento do pedido. Confira no carrinho!"
+  },
+  {
+    "question": "frete grátis",
+    "answer": "🎉 Frete grátis para São Paulo em compras acima de R$ 150! Para outras regiões, valores a partir de R$ 15. Aproveite!"
+  },
+  {
+    "question": "vocês fazem instalação",
+    "answer": "🔌 Oferecemos serviço de instalação para produtos selecionados! Consulte disponibilidade pelo WhatsApp: <a href='https://wa.me/5511999999999' target='_blank'>(11) 99999-9999</a>"
+  },
+  {
+    "question": "preciso de instalação",
+    "answer": "🛠️ Serviço de instalação disponível! Contate nosso técnico: <a href='https://wa.me/5511999999999' target='_blank'>(11) 99999-9999</a> para orçamento e agendamento."
+  },
+  {
+    "question": "catalogo de produtos",
+    "answer": "📚 Confira nosso catálogo completo: <a href='https://smcomponentes.com.br/produtos' target='_blank'>smcomponentes.com.br/produtos</a> - Conectores, cabos, áudio, potenciômetros e muito mais!"
+  },
+  {
+    "question": "quais produtos vocês têm",
+    "answer": "🛍️ Temos: Conectores variados, cabos de energia, componentes de áudio/vídeo, potenciômetros, adaptadores e muito mais! Veja em: <a href='https://smcomponentes.com.br' target='_blank'>smcomponentes.com.br</a>"
+  },
+  {
+    "question": "obrigado",
+    "answer": "😊 De nada! Foi um prazer ajudar! Volte sempre à SM Componentes - sua loja de componentes eletrônicos de confianza!"
+  },
+  {
+    "question": "valeu",
+    "answer": "👋 Por nada! Qualquer dúvida sobre componentes eletrônicos, estarei aqui! Boas compras na SM Componentes!"
+  },
+  {
+    "question": "tchau",
+    "answer": "👋 Até logo! Obrigado por visitar a SM Componentes. Volte sempre que precisar de componentes eletrônicos!"
   }
 ]
