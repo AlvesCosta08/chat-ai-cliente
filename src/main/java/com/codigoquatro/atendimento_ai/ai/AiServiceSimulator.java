@@ -228,19 +228,20 @@ public class AiServiceSimulator implements AiService {
                 sb.append("🛒 **Produtos encontrados na SM Componentes:**\n");
                 for (Product p : products) {
                     sb.append(String.format(
-                            "• **%s** (Categoria: %s)\n  🔗 <a href=\"%s\" target=\"_blank\" style=\"color: #007bff; text-decoration: none;\">Ver produto</a>\n\n",
+                            "• **%s** (Categoria: %s)\n  🔗 <a href=\"%s\" target=\"_blank\">Ver produto</a>\n\n",
                             p.getName(),
                             p.getCategory(),
                             p.getProductUrl()
                     ));
                 }
             } else {
+                // Fornece URLs completas para a IA converter em links HTML
                 sb.append("🔍 **Sugestão de categorias para sua busca:**\n");
-                sb.append("• <a href=\"https://smcomponentes.com.br/loja/categoria-conectores-variados\" target=\"_blank\" style=\"color: #007bff; text-decoration: none;\">Conectores Variados</a>\n");
-                sb.append("• <a href=\"https://smcomponentes.com.br/loja/categoria-potenciometros\" target=\"_blank\" style=\"color: #007bff; text-decoration: none;\">Potenciômetros</a>\n");
-                sb.append("• <a href=\"https://smcomponentes.com.br/loja/categoria-audio-e-video\" target=\"_blank\" style=\"color: #007bff; text-decoration: none;\">Áudio e Vídeo</a>\n");
-                sb.append("• <a href=\"https://smcomponentes.com.br/loja/categoria-acessorios\" target=\"_blank\" style=\"color: #007bff; text-decoration: none;\">Acessórios</a>\n");
-                sb.append("• <a href=\"https://smcomponentes.com.br/loja/categoria-cabos-de-energia\" target=\"_blank\" style=\"color: #007bff; text-decoration: none;\">Cabos de Energia</a>\n");
+                sb.append("• Conectores Variados: https://smcomponentes.com.br/loja/categoria-conectores-variados\n");
+                sb.append("• Potenciômetros: https://smcomponentes.com.br/loja/categoria-potenciometros\n");
+                sb.append("• Áudio e Vídeo: https://smcomponentes.com.br/loja/categoria-audio-e-video\n");
+                sb.append("• Acessórios: https://smcomponentes.com.br/loja/categoria-acessorios\n");
+                sb.append("• Cabos de Energia: https://smcomponentes.com.br/loja/categoria-cabos-de-energia\n");
             }
         }
 
@@ -248,8 +249,8 @@ public class AiServiceSimulator implements AiService {
         if (intent == QuestionIntent.SUPPORT_REQUEST) {
             sb.append("🔧 **Informações de suporte técnico:**\n");
             sb.append("• Horário de atendimento: Segunda a Sexta, 8h às 18h\n");
-            sb.append("• Email de suporte: <a href=\"mailto:suporte@smcomponentes.com.br\" style=\"color: #007bff; text-decoration: none;\">suporte@smcomponentes.com.br</a>\n");
-            sb.append("• WhatsApp: <a href=\"https://wa.me/5511999999999\" target=\"_blank\" style=\"color: #007bff; text-decoration: none;\">(11) 99999-9999</a>\n");
+            sb.append("• Email de suporte: suporte@smcomponentes.com.br\n");
+            sb.append("• WhatsApp: https://wa.me/5511999999999\n");
         }
 
         return sb.toString().trim();
@@ -267,15 +268,15 @@ public class AiServiceSimulator implements AiService {
             Pergunta do cliente:
             "%s"
 
-            Regras importantes:
+            Regras CRÍTICAS para formatação:
+            - SEMPRE formate links como HTML: <a href="URL_COMPLETA" target="_blank">TEXTO_VISÍVEL</a>
+            - NUNCA use markdown [texto](url)
+            - Para emails: <a href="mailto:email@exemplo.com">email@exemplo.com</a>
+            - Para WhatsApp: <a href="https://wa.me/5511999999999" target="_blank">(11) 99999-9999</a>
+            - Todos os links devem abrir em nova aba (target="_blank")
             - Seja direto e útil
-            - Use formatação Markdown quando apropriado
-            - Se não souber a resposta exata, seja honesto
+            - Use emojis com moderação (máximo 2-3)
             - Mantenha o tom profissional mas amigável
-            - Use emojis com moderação (máximo 2-3 por resposta)
-            - SEMPRE use links HTML para URLs: <a href="URL" target="_blank">Texto</a>
-            - Para emails use: <a href="mailto:email@exemplo.com">email@exemplo.com</a>
-            - Para WhatsApp use: <a href="https://wa.me/5511999999999" target="_blank">(11) 99999-9999</a>
 
             Resposta (em português do Brasil):
             """.formatted(role, context, question);
@@ -284,11 +285,11 @@ public class AiServiceSimulator implements AiService {
     private String getRoleByIntent(QuestionIntent intent) {
         switch (intent) {
             case PRODUCT_INQUIRY:
-                return "Você é um vendedor especializado da SM Componentes, loja de componentes eletrônicos. Sua missão é ajudar clientes a encontrar produtos e fornecer informações técnicas precisas. SEMPRE inclua links clicáveis para produtos e categorias usando HTML <a> tags.";
+                return "Você é um vendedor especializado da SM Componentes, loja de componentes eletrônicos. Sua missão é ajudar clientes a encontrar produtos e fornecer informações técnicas precisas. CRÍTICO: Sempre formate links em HTML com <a href>.";
             case SUPPORT_REQUEST:
-                return "Você é um técnico de suporte da SM Componentes. Sua missão é resolver problemas técnicos, fornecer orientações e direcionar para o canal apropriado quando necessário. SEMPRE inclua links de contato clicáveis usando HTML <a> tags.";
+                return "Você é um técnico de suporte da SM Componentes. Sua missão é resolver problemas técnicos, fornecer orientações e direcionar para o canal apropriado. CRÍTICO: Todos os links de contato devem estar em formato HTML <a href>.";
             default:
-                return "Você é um atendente da SM Componentes. Sua missão é responder dúvidas gerais sobre a empresa, produtos e serviços de forma clara e útil. SEMPRE use links HTML clicáveis quando mencionar URLs.";
+                return "Você é um atendente da SM Componentes. Sua missão é responder dúvidas gerais sobre a empresa, produtos e serviços. CRÍTICO: Use exclusivamente links HTML <a href> para qualquer URL.";
         }
     }
 
@@ -345,19 +346,30 @@ public class AiServiceSimulator implements AiService {
     }
 
     private String ensureClickableLinks(String response) {
-        // Converte markdown [texto](url) para HTML <a>
+        // Se a resposta já contém links HTML, retorna como está
+        if (response.contains("<a href")) {
+            return response;
+        }
+        
+        // Converte markdown [texto](url) para HTML
         String withHtmlLinks = response.replaceAll(
             "\\[([^\\]]+)\\]\\(([^)]+)\\)", 
-            "<a href=\"$2\" target=\"_blank\" style=\"color: #007bff; text-decoration: none;\">$1</a>"
+            "<a href=\"$2\" target=\"_blank\">$1</a>"
         );
         
-        // Garante que URLs soltas também sejam links
+        // Converte URLs soltas para links HTML
         String withBareUrls = withHtmlLinks.replaceAll(
             "(?<!href=\")(https?://[^\\s<>\"]+)(?!\"[^>]*>)(?![^<]*</a>)", 
-            "<a href=\"$1\" target=\"_blank\" style=\"color: #007bff; text-decoration: none;\">$1</a>"
+            "<a href=\"$1\" target=\"_blank\">$1</a>"
         );
         
-        return withBareUrls;
+        // Converte emails para mailto links
+        String withEmailLinks = withBareUrls.replaceAll(
+            "([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})",
+            "<a href=\"mailto:$1\">$1</a>"
+        );
+        
+        return withEmailLinks;
     }
 
     private void cacheResponse(String question, String response) {
@@ -371,13 +383,13 @@ public class AiServiceSimulator implements AiService {
             No momento, estou com dificuldades técnicas, mas posso te ajudar de outras formas:
 
             🔍 **Para encontrar produtos:** 
-            Visite nossas categorias principais em <a href="https://smcomponentes.com.br" target="_blank" style="color: #007bff; text-decoration: none;">smcomponentes.com.br</a>
+            Visite nossas categorias principais em <a href="https://smcomponentes.com.br" target="_blank">smcomponentes.com.br</a>
 
             📞 **Para suporte técnico:**
-            Entre em contato pelo <a href="https://wa.me/5511999999999" target="_blank" style="color: #007bff; text-decoration: none;">WhatsApp (11) 99999-9999</a>
+            Entre em contato pelo <a href="https://wa.me/5511999999999" target="_blank">WhatsApp (11) 99999-9999</a>
 
             📧 **Para outras dúvidas:**
-            Envie um email para <a href="mailto:contato@smcomponentes.com.br" style="color: #007bff; text-decoration: none;">contato@smcomponentes.com.br</a>
+            Envie um email para <a href="mailto:contato@smcomponentes.com.br">contato@smcomponentes.com.br</a>
 
             Enquanto isso, você pode reformular sua pergunta? Vou tentar novamente! 🔧
             """;
@@ -404,6 +416,28 @@ public class AiServiceSimulator implements AiService {
 
         public boolean isExpired() {
             return (System.currentTimeMillis() - timestamp) > CACHE_TTL;
+        }
+    }
+
+    // Classe para a base de conhecimento
+    public static class KnowledgeEntry {
+        private String question;
+        private String answer;
+
+        public String getQuestion() {
+            return question;
+        }
+
+        public void setQuestion(String question) {
+            this.question = question;
+        }
+
+        public String getAnswer() {
+            return answer;
+        }
+
+        public void setAnswer(String answer) {
+            this.answer = answer;
         }
     }
 }
