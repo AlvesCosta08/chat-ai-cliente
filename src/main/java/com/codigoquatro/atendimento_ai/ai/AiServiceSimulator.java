@@ -1,10 +1,12 @@
 package com.codigoquatro.atendimento_ai.ai;
 
+
+
 import com.codigoquatro.atendimento_ai.model.Product;
 import com.codigoquatro.atendimento_ai.service.SmComponentesScraperService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.text.similarity.JaroWinklerSimilarity;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +21,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,15 +29,35 @@ public class AiServiceSimulator implements AiService {
 
     private static final Logger logger = LoggerFactory.getLogger(AiServiceSimulator.class);
     private static final double SIMILARITY_THRESHOLD = 0.70;
+    private static final int MAX_LEVENSHTEIN_DISTANCE = 5;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final JaroWinklerSimilarity similarity = new JaroWinklerSimilarity();
+    private final LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();
     private HttpClient httpClient;
     private String apiKey;
     private String model;
     private List<KnowledgeEntry> knowledgeBase = List.of();
 
+    // Cache inteligente para perguntas frequentes
+    private final Map<String, CacheEntry> responseCache = new LinkedHashMap<>() {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, CacheEntry> eldest) {
+            return size() > 100; // Mantém apenas 100 entradas no cache
+        }
+    };
+
     private final SmComponentesScraperService scraperService;
+
+    // Palavras-chave para detecção de intenção
+    private static final Set<String> PRODUCT_KEYWORDS = Set.of(
+            "comprar", "produto", "componente", "conector", "cabo", "adaptador",
+            "preço", "valor", "custo", "onde encontrar", "quero comprar"
+    );
+
+    private static final Set<String> SUPPORT_KEYWORDS = Set.of(
+            "problema", "ajuda", "suporte", "dúvida", "como usar", "funcionamento",
+            "defeito", "não funciona", "garantia", "tutorial"
+    );
 
     public AiServiceSimulator(
             @Value("${openrouter.api.key}") String apiKey,
@@ -76,37 +96,87 @@ public class AiServiceSimulator implements AiService {
             return "Olá! 😊 Como posso te ajudar hoje na SM Componentes?";
         }
 
+        String normalizedQuestion = normalizeQuestion(question);
+
+        // Verifica cache primeiro
+        CacheEntry cachedResponse = responseCache.get(normalizedQuestion);
+        if (cachedResponse != null && !cachedResponse.isExpired()) {
+            logger.info("Resposta recuperada do cache para: {}", normalizedQuestion);
+            return cachedResponse.getResponse();
+        }
+
         try {
-            // 1. Busca na base de conhecimento estática
-            List<KnowledgeEntry> relevantEntries = findRelevantEntriesBySimilarity(question);
+            // 1. Detectar intenção da pergunta
+            QuestionIntent intent = detectIntent(question);
 
-            // 2. Busca dinâmica de produtos na SM Componentes
-            @SuppressWarnings("unchecked")
-            List<Product> relevantProducts = (List<Product>)(List<?>) scraperService.searchProducts(question);
+            // 2. Busca na base de conhecimento estática
+            List<KnowledgeEntry> relevantEntries = findRelevantEntries(normalizedQuestion);
 
-            // 3. Monta contexto combinado
-            String context = buildContext(relevantEntries, relevantProducts);
+            // 3. Busca dinâmica de produtos (apenas se for intenção de compra/produto)
+            List<Product> relevantProducts = Collections.emptyList();
+            if (intent == QuestionIntent.PRODUCT_INQUIRY) {
+                relevantProducts = scraperService.searchProducts(question);
+            }
 
-            // 4. Monta prompt otimizado para componentes eletrônicos
-            String prompt = buildPrompt(question, context);
+            // 4. Monta contexto combinado baseado na intenção
+            String context = buildContext(intent, relevantEntries, relevantProducts, question);
 
-            // 5. Chama OpenRouter
-            return callOpenRouter(prompt);
+            // 5. Se encontrou resposta exata na base de conhecimento, usa ela
+            if (!relevantEntries.isEmpty() && hasExactMatch(relevantEntries, normalizedQuestion)) {
+                String exactAnswer = relevantEntries.get(0).getAnswer();
+                cacheResponse(normalizedQuestion, exactAnswer);
+                return exactAnswer;
+            }
+
+            // 6. Monta prompt otimizado baseado na intenção
+            String prompt = buildPrompt(intent, question, context);
+
+            // 7. Chama OpenRouter
+            String aiResponse = callOpenRouter(prompt);
+
+            // Cache da resposta
+            cacheResponse(normalizedQuestion, aiResponse);
+
+            return aiResponse;
 
         } catch (Exception e) {
             logger.error("Erro inesperado ao processar pergunta: '{}'", question, e);
-            return "Desculpe, tive um probleminha técnico. Pode reformular sua dúvida? Estou aqui para ajudar! 😊";
+            return getFallbackResponse(question);
         }
     }
 
-    private List<KnowledgeEntry> findRelevantEntriesBySimilarity(String userQuestion) {
+    private String normalizeQuestion(String question) {
+        return question.toLowerCase()
+                .replaceAll("[^a-z0-9áéíóúâêîôûãõç\\s]", "")
+                .replaceAll("\\s+", " ")
+                .trim();
+    }
+
+    private QuestionIntent detectIntent(String question) {
+        String lowerQuestion = question.toLowerCase();
+
+        boolean hasProductKeywords = PRODUCT_KEYWORDS.stream()
+                .anyMatch(lowerQuestion::contains);
+
+        boolean hasSupportKeywords = SUPPORT_KEYWORDS.stream()
+                .anyMatch(lowerQuestion::contains);
+
+        if (hasProductKeywords) {
+            return QuestionIntent.PRODUCT_INQUIRY;
+        } else if (hasSupportKeywords) {
+            return QuestionIntent.SUPPORT_REQUEST;
+        } else {
+            return QuestionIntent.GENERAL_INQUIRY;
+        }
+    }
+
+    private List<KnowledgeEntry> findRelevantEntries(String userQuestion) {
         if (knowledgeBase.isEmpty()) return List.of();
 
-        String lowerUserQuestion = userQuestion.toLowerCase().trim();
         return knowledgeBase.stream()
                 .map(entry -> {
-                    double score = similarity.apply(lowerUserQuestion, entry.getQuestion().toLowerCase());
-                    return Map.entry(entry, score);
+                    double similarityScore = calculateSimilarity(userQuestion, entry.getQuestion());
+                    return Map.entry(entry, similarityScore);
                 })
                 .filter(e -> e.getValue() >= SIMILARITY_THRESHOLD)
                 .sorted(Map.Entry.<KnowledgeEntry, Double>comparingByValue().reversed())
@@ -115,52 +185,80 @@ public class AiServiceSimulator implements AiService {
                 .collect(Collectors.toList());
     }
 
-    private String buildContext(List<KnowledgeEntry> entries, List<Product> products) {
+    private double calculateSimilarity(String question1, String question2) {
+        String normalized1 = normalizeQuestion(question1);
+        String normalized2 = normalizeQuestion(question2);
+
+        // Usa Levenshtein para similaridade
+        int maxLength = Math.max(normalized1.length(), normalized2.length());
+        if (maxLength == 0) return 1.0;
+
+        int distance = levenshteinDistance.apply(normalized1, normalized2);
+        double similarity = 1.0 - ((double) distance / maxLength);
+
+        return similarity;
+    }
+
+    private boolean hasExactMatch(List<KnowledgeEntry> entries, String userQuestion) {
+        return entries.stream()
+                .anyMatch(entry -> {
+                    String normalizedEntryQuestion = normalizeQuestion(entry.getQuestion());
+                    int distance = levenshteinDistance.apply(userQuestion, normalizedEntryQuestion);
+                    return distance <= MAX_LEVENSHTEIN_DISTANCE;
+                });
+    }
+
+    private String buildContext(QuestionIntent intent, List<KnowledgeEntry> entries,
+                                List<Product> products, String originalQuestion) {
         StringBuilder sb = new StringBuilder();
 
+        // Informações institucionais (para todos os tipos de intenção)
         if (!entries.isEmpty()) {
-            sb.append("ℹ️ Informações institucionais:\n");
+            sb.append("📚 **Informações institucionais relevantes:**\n");
             for (KnowledgeEntry entry : entries) {
-                sb.append("- ").append(entry.getAnswer()).append("\n");
+                sb.append("• ").append(entry.getAnswer()).append("\n");
             }
             sb.append("\n");
         }
 
-        if (!products.isEmpty()) {
-            sb.append("🔌 **Produtos encontrados na SM Componentes:**\n");
-            for (Product p : products) {
-                sb.append(String.format(
-                    "- **%s** (%s)\n  🔗 [Ver produto](%s)\n\n",
-                    p.getName(),
-                    p.getCategory(),
-                    p.getProductUrl()
-                ));
+        // Produtos (apenas para intenção de produto)
+        if (intent == QuestionIntent.PRODUCT_INQUIRY) {
+            if (!products.isEmpty()) {
+                sb.append("🛒 **Produtos encontrados na SM Componentes:**\n");
+                for (Product p : products) {
+                    sb.append(String.format(
+                            "• **%s** (Categoria: %s)\n  🔗 [Ver produto](%s)\n\n",
+                            p.getName(),
+                            p.getCategory(),
+                            p.getProductUrl()
+                    ));
+                }
+            } else {
+                sb.append("🔍 **Sugestão de categorias para sua busca:**\n");
+                sb.append("• [Conectores Variados](https://smcomponentes.com.br/loja/categoria-conectores-variados)\n");
+                sb.append("• [Potenciômetros](https://smcomponentes.com.br/loja/categoria-potenciometros)\n");
+                sb.append("• [Áudio e Vídeo](https://smcomponentes.com.br/loja/categoria-audio-e-video)\n");
+                sb.append("• [Acessórios](https://smcomponentes.com.br/loja/categoria-acessorios)\n");
+                sb.append("• [Cabos de Energia](https://smcomponentes.com.br/loja/categoria-cabos-de-energia)\n");
             }
-            return sb.toString();
         }
 
-        // Fallback: links das categorias principais
-        sb.append("🔍 **Confira nossas categorias principais:**\n");
-        sb.append("- [Conectores Variados](https://smcomponentes.com.br/loja/categoria-conectores-variados)\n");
-        sb.append("- [Potenciômetros](https://smcomponentes.com.br/loja/categoria-potenciometros)\n");
-        sb.append("- [Áudio e Vídeo](https://smcomponentes.com.br/loja/categoria-audio-e-video)\n");
-        sb.append("- [Acessórios](https://smcomponentes.com.br/loja/categoria-acessorios)\n");
-        // ... outras categorias
+        // Informações de suporte (apenas para intenção de suporte)
+        if (intent == QuestionIntent.SUPPORT_REQUEST) {
+            sb.append("🔧 **Informações de suporte técnico:**\n");
+            sb.append("• Horário de atendimento: Segunda a Sexta, 8h às 18h\n");
+            sb.append("• Email de suporte: suporte@smcomponentes.com.br\n");
+            sb.append("• WhatsApp: (11) 99999-9999\n");
+        }
 
-        return sb.toString();
+        return sb.toString().trim();
     }
 
-    private String buildPrompt(String question, String context) {
-        return """
-            Você é um atendente especializado da **SM Componentes**, loja especializada em componentes eletrônicos como:
-            conectores, cabos, adaptadores, potenciômetros, bornes, plugs e acessórios técnicos.
+    private String buildPrompt(QuestionIntent intent, String question, String context) {
+        String role = getRoleByIntent(intent);
 
-            Sua missão:
-            - Responder com clareza, precisão técnica e cordialidade.
-            - Sempre que houver produtos listados acima, mencione-os com nome e link.
-            - Se não souber a resposta exata, NÃO invente. Diga: "Vou verificar com nosso time técnico e te respondo em breve!"
-            - Use emojis técnicos (🔌, ⚡, 📡, 🔌) com moderação.
-            - Finalize com uma chamada para ação: "Precisa de ajuda para escolher?", "Quer que eu te envie o link direto?"
+        return """
+            %s
 
             Contexto disponível:
             %s
@@ -168,27 +266,47 @@ public class AiServiceSimulator implements AiService {
             Pergunta do cliente:
             "%s"
 
-            Resposta (em português do Brasil, profissional e útil):
-            """.formatted(context, question);
+            Regras importantes:
+            - Seja direto e útil
+            - Use formatação Markdown quando apropriado
+            - Se não souber a resposta exata, seja honesto
+            - Mantenha o tom profissional mas amigável
+            - Use emojis com moderação (máximo 2-3 por resposta)
+
+            Resposta (em português do Brasil):
+            """.formatted(role, context, question);
+    }
+
+    private String getRoleByIntent(QuestionIntent intent) {
+        switch (intent) {
+            case PRODUCT_INQUIRY:
+                return "Você é um vendedor especializado da SM Componentes, loja de componentes eletrônicos. Sua missão é ajudar clientes a encontrar produtos e fornecer informações técnicas precisas.";
+            case SUPPORT_REQUEST:
+                return "Você é um técnico de suporte da SM Componentes. Sua missão é resolver problemas técnicos, fornecer orientações e direcionar para o canal apropriado quando necessário.";
+            default:
+                return "Você é um atendente da SM Componentes. Sua missão é responder dúvidas gerais sobre a empresa, produtos e serviços de forma clara e útil.";
+        }
     }
 
     private String callOpenRouter(String prompt) {
         String url = "https://openrouter.ai/api/v1/chat/completions";
-        String referer = "https://smcomponentes.com.br"; // URL real da sua loja
+        String referer = "https://smcomponentes.com.br";
 
         try {
-            String requestBody = """
-                {
-                  "model": "%s",
-                  "messages": [
-                    {
-                      "role": "user",
-                      "content": %s
-                    }
-                  ],
-                  "temperature": 0.6
-                }
-                """.formatted(model, objectMapper.writeValueAsString(prompt));
+            Map<String, Object> requestBodyMap = new HashMap<>();
+            requestBodyMap.put("model", model);
+
+            List<Map<String, String>> messages = new ArrayList<>();
+            Map<String, String> message = new HashMap<>();
+            message.put("role", "user");
+            message.put("content", prompt);
+            messages.add(message);
+
+            requestBodyMap.put("messages", messages);
+            requestBodyMap.put("temperature", 0.6);
+            requestBodyMap.put("max_tokens", 800);
+
+            String requestBody = objectMapper.writeValueAsString(requestBodyMap);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -204,7 +322,7 @@ public class AiServiceSimulator implements AiService {
 
             if (response.statusCode() != 200) {
                 logger.error("Erro OpenRouter ({}): {}", response.statusCode(), response.body());
-                throw new RuntimeException("Erro na API de IA");
+                throw new RuntimeException("Erro na API de IA: " + response.statusCode());
             }
 
             JsonNode json = objectMapper.readTree(response.body());
@@ -219,6 +337,53 @@ public class AiServiceSimulator implements AiService {
             logger.error("Falha na chamada à OpenRouter", e);
             Thread.currentThread().interrupt();
             throw new RuntimeException("Falha de comunicação com o serviço de IA", e);
+        }
+    }
+
+    private void cacheResponse(String question, String response) {
+        responseCache.put(question, new CacheEntry(response));
+    }
+
+    private String getFallbackResponse(String originalQuestion) {
+        return """
+            Olá! 😊 
+            
+            No momento, estou com dificuldades técnicas, mas posso te ajudar de outras formas:
+
+            🔍 **Para encontrar produtos:** 
+            Visite nossas categorias principais em [smcomponentes.com.br](https://smcomponentes.com.br)
+
+            📞 **Para suporte técnico:**
+            Entre em contato pelo WhatsApp (11) 99999-9999
+
+            📧 **Para outras dúvidas:**
+            Envie um email para contato@smcomponentes.com.br
+
+            Enquanto isso, você pode reformular sua pergunta? Vou tentar novamente! 🔧
+            """;
+    }
+
+    // Classes internas para organização
+    private enum QuestionIntent {
+        PRODUCT_INQUIRY, SUPPORT_REQUEST, GENERAL_INQUIRY
+    }
+
+    private static class CacheEntry {
+        private final String response;
+        private final long timestamp;
+        private static final long CACHE_TTL = 30 * 60 * 1000; // 30 minutos
+
+        CacheEntry(String response) {
+            this.response = response;
+            this.timestamp = System.currentTimeMillis();
+        }
+
+        public String getResponse() {
+            return response;
+        }
+
+        public boolean isExpired() {
+            return (System.currentTimeMillis() - timestamp) > CACHE_TTL;
         }
     }
 }
