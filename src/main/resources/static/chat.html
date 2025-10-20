@@ -150,10 +150,9 @@
                 throw new Error(`Erro da API: ${response.status}`);
             }
 
-            // Recebe a resposta como texto puro (HTML)
-            const htmlResponse = await response.text();
+            const data = await response.json();
             removeTypingIndicator(); // Remove o indicador
-            addMessage(htmlResponse); // Adiciona a resposta do bot (já é HTML)
+            addMessage(data.answer); // Adiciona a resposta do bot
 
         } catch (error) {
             console.error('Erro ao enviar pergunta:', error);
