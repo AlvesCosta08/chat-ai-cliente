@@ -104,7 +104,8 @@
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message');
         messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
-        messageDiv.textContent = text;
+        // CORRIGIDO: Usa innerHTML para renderizar HTML
+        messageDiv.innerHTML = text;
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight; // Rola para a última mensagem
     }
