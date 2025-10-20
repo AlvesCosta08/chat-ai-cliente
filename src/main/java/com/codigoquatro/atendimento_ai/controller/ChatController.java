@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
+
 import java.util.Map;
 
 @RestController
@@ -25,40 +25,31 @@ public class ChatController {
 
     // Endpoint para receber a pergunta do usuário
     @PostMapping("/question")
-    public ResponseEntity<String> handleQuestion(@RequestBody Map<String, String> request) { // Muda o tipo de retorno
+    public ResponseEntity<String> handleQuestion(@RequestBody Map<String, String> request) {
         String question = request.get("question");
 
         if (question == null || question.trim().isEmpty()) {
-            String errorResponse = "{\"error\": \"Pergunta não pode estar vazia.\"}"; // JSON como string
             logger.warn("Recebida requisição com pergunta vazia ou nula.");
-            return ResponseEntity.badRequest().body(errorResponse);
+            return ResponseEntity.badRequest()
+                    .body("{\"error\": \"Pergunta não pode estar vazia.\"}");
         }
 
         try {
-            // Chama o serviço para processar a pergunta e obter a interação completa
             InteractionLog interaction = interactionService.processQuestion(question);
 
-            // Retorna o HTML puro diretamente como string, sem envolver um objeto Java
-            String successResponse = "{\"answer\": \"" + escapeJsonString(interaction.getAnswer()) + "\"}";
+            // Retorna diretamente o HTML gerado pela AI, sem envolver em JSON
+            // Isso evita qualquer escape automático do Jackson
+            String htmlResponse = interaction.getAnswer();
 
             logger.debug("Pergunta processada com sucesso. ID da interação: {}", interaction.getId());
-            return ResponseEntity.ok(successResponse);
+            return ResponseEntity.ok(htmlResponse);
 
         } catch (Exception e) {
             logger.error("Erro inesperado no controller ao processar a pergunta '{}' : ", question, e);
-            String errorResponse = "{\"answer\": \"Desculpe, ocorreu um erro ao processar sua pergunta. Tente novamente ou reformule sua dúvida. Agradecemos sua compreensão.\"}";
-            return ResponseEntity.ok(errorResponse); // Retorna 200 OK com a mensagem de erro
+            String fallbackHtml = """
+                <p>Desculpe, ocorreu um erro ao processar sua pergunta. Tente novamente ou reformule sua dúvida. Agradecemos sua compreensão.</p>
+                """;
+            return ResponseEntity.ok(fallbackHtml);
         }
-    }
-
-    // Função auxiliar simples para escapar aspas e barras invertidas em JSON
-    // Isso é necessário porque o conteúdo de 'answer' pode conter aspas e quebras de linha
-    private String escapeJsonString(String input) {
-        if (input == null) return "null";
-        return input.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
     }
 }
