@@ -286,7 +286,7 @@ public class AiServiceSimulator implements AiService {
             **EXEMPLOS CORRETOS:**
             ✅ "Confira em <a href=\"https://smcomponentes.com.br/loja\" target=\"_blank\">nosso catálogo</a>"
             ✅ "Entre em contato: <a href=\"mailto:suporte@smcomponentes.com.br\">suporte@smcomponentes.com.br</a>"
-            ✅ "WhatsApp: <a href=\"https://wa.me/5585999055729\" target=\"_blank\">(11) 99999-9999</a>"
+            ✅ "WhatsApp: <a href=\"https://wa.me/5585999055729\" target=\"_blank\">(85)99905-5729"</a>"
 
             **EXEMPLOS ERRADOS:**
             ❌ "Confira em https://smcomponentes.com.br/loja"
