@@ -254,7 +254,7 @@ public class AiServiceSimulator implements AiService {
             sb.append("🔧 **Informações de suporte técnico:**\n");
             sb.append("• Horário de atendimento: Segunda a Sexta, 8h às 18h\n");
             sb.append("• Email de suporte: suporte@smcomponentes.com.br\n");
-            sb.append("• WhatsApp: https://wa.me/5511999999999\n");
+            sb.append("• WhatsApp: https://wa.me/5585999055729 \n");
             sb.append("• Site: https://smcomponentes.com.br\n");
         }
 
@@ -278,7 +278,7 @@ public class AiServiceSimulator implements AiService {
             - NUNCA use markdown [texto](url)
             - NUNCA deixe URLs soltas no texto
             - Para emails: <a href="mailto:email@exemplo.com">email@exemplo.com</a>
-            - Para WhatsApp: <a href="https://wa.me/5511999999999" target="_blank">(11) 99999-9999</a>
+            - Para WhatsApp: <a href="https://wa.me/5585999055729" target="_blank">(11) 99999-9999</a>
             - Para sites: <a href="https://smcomponentes.com.br/loja" target="_blank">SM Componentes</a>
             - Todos os links DEVEM abrir em nova aba (target="_blank")
             - Sua resposta FINAL deve ser em HTML válido com links clicáveis
@@ -286,7 +286,7 @@ public class AiServiceSimulator implements AiService {
             **EXEMPLOS CORRETOS:**
             ✅ "Confira em <a href=\"https://smcomponentes.com.br/loja\" target=\"_blank\">nosso catálogo</a>"
             ✅ "Entre em contato: <a href=\"mailto:suporte@smcomponentes.com.br\">suporte@smcomponentes.com.br</a>"
-            ✅ "WhatsApp: <a href=\"https://wa.me/5511999999999\" target=\"_blank\">(11) 99999-9999</a>"
+            ✅ "WhatsApp: <a href=\"https://wa.me/5585999055729\" target=\"_blank\">(11) 99999-9999</a>"
 
             **EXEMPLOS ERRADOS:**
             ❌ "Confira em https://smcomponentes.com.br/loja"
@@ -421,7 +421,7 @@ public class AiServiceSimulator implements AiService {
             Visite nossas categorias principais em <a href="https://smcomponentes.com.br/loja" target="_blank">smcomponentes.com.br</a>
 
             📞 <strong>Para suporte técnico:</strong>
-            Entre em contato pelo <a href="https://wa.me/5511999999999" target="_blank">WhatsApp (11) 99999-9999</a>
+            Entre em contato pelo <a href="https://wa.me/5585999055729" target="_blank">WhatsApp (85)99905-5729</a>
 
             📧 <strong>Para outras dúvidas:</strong>
             Envie um email para <a href="mailto:contato@smcomponentes.com.br">contato@smcomponentes.com.br</a>
