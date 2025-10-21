@@ -245,7 +245,7 @@ public class AiServiceSimulator implements AiService {
                 sb.append("• Áudio e Vídeo: https://smcomponentes.com.br/loja/categoria-audio-e-video\n");
                 sb.append("• Acessórios: https://smcomponentes.com.br/loja/categoria-acessorios\n");
                 sb.append("• Cabos de Energia: https://smcomponentes.com.br/loja/categoria-cabos-de-energia\n");
-                sb.append("• Catálogo Completo: https://smcomponentes.com.br/produtos\n");
+                sb.append("• Catálogo Completo: https://smcomponentes.com.br/loja\n");
             }
         }
 
@@ -279,18 +279,18 @@ public class AiServiceSimulator implements AiService {
             - NUNCA deixe URLs soltas no texto
             - Para emails: <a href="mailto:email@exemplo.com">email@exemplo.com</a>
             - Para WhatsApp: <a href="https://wa.me/5511999999999" target="_blank">(11) 99999-9999</a>
-            - Para sites: <a href="https://smcomponentes.com.br" target="_blank">SM Componentes</a>
+            - Para sites: <a href="https://smcomponentes.com.br/loja" target="_blank">SM Componentes</a>
             - Todos os links DEVEM abrir em nova aba (target="_blank")
             - Sua resposta FINAL deve ser em HTML válido com links clicáveis
 
             **EXEMPLOS CORRETOS:**
-            ✅ "Confira em <a href=\"https://smcomponentes.com.br/produtos\" target=\"_blank\">nosso catálogo</a>"
+            ✅ "Confira em <a href=\"https://smcomponentes.com.br/loja\" target=\"_blank\">nosso catálogo</a>"
             ✅ "Entre em contato: <a href=\"mailto:suporte@smcomponentes.com.br\">suporte@smcomponentes.com.br</a>"
             ✅ "WhatsApp: <a href=\"https://wa.me/5511999999999\" target=\"_blank\">(11) 99999-9999</a>"
 
             **EXEMPLOS ERRADOS:**
-            ❌ "Confira em https://smcomponentes.com.br/produtos"
-            ❌ "Visite [nosso site](https://smcomponentes.com.br)"
+            ❌ "Confira em https://smcomponentes.com.br/loja"
+            ❌ "Visite [nosso site](https://smcomponentes.com.br/loja)"
             ❌ "Email: suporte@smcomponentes.com.br"
 
             Resposta (em português do Brasil, com links HTML):
@@ -418,7 +418,7 @@ public class AiServiceSimulator implements AiService {
             No momento, estou com dificuldades técnicas, mas posso te ajudar de outras formas:
 
             🔍 <strong>Para encontrar produtos:</strong> 
-            Visite nossas categorias principais em <a href="https://smcomponentes.com.br" target="_blank">smcomponentes.com.br</a>
+            Visite nossas categorias principais em <a href="https://smcomponentes.com.br/loja" target="_blank">smcomponentes.com.br</a>
 
             📞 <strong>Para suporte técnico:</strong>
             Entre em contato pelo <a href="https://wa.me/5511999999999" target="_blank">WhatsApp (11) 99999-9999</a>
