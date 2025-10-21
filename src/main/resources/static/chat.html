@@ -159,7 +159,7 @@
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message');
         messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
-        messageDiv.textContent = text; // Usa textContent por segurança (evita XSS)
+        messageDiv.innerHTML = text; // Usa innerHTML para renderizar HTML
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
