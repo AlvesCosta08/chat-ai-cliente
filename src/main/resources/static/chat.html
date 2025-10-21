@@ -1,96 +1,152 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat de Suporte</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            background-color: #d9dbda;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
+            overflow: hidden;
         }
+
         #chat-container {
             width: 100%;
             max-width: 500px;
-            height: 600px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+            height: 700px;
             display: flex;
             flex-direction: column;
             background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
         }
+
+        /* Cabeçalho estilo WhatsApp */
+        #chat-header {
+            background-color: #00a884;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+
+        #chat-header span {
+            margin-left: 10px;
+        }
+
+        /* Área de mensagens */
         #chat-messages {
             flex: 1;
             padding: 15px;
             overflow-y: auto;
+            background-color: #efeae2;
             display: flex;
             flex-direction: column;
         }
+
         .message {
-            margin-bottom: 10px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            max-width: 80%;
+            max-width: 70%;
+            padding: 6px 7px 8px;
+            margin-bottom: 6px;
+            position: relative;
+            word-wrap: break-word;
+            border-radius: 7.5px;
+            font-size: 14px;
+            line-height: 1.4;
         }
+
         .user-message {
             align-self: flex-end;
-            background-color: #007bff;
-            color: white;
+            background-color: #dcf8c6;
+            border-bottom-right-radius: 3px;
         }
+
         .bot-message {
             align-self: flex-start;
-            background-color: #e9ecef;
-            color: black;
+            background-color: #ffffff;
+            border-bottom-left-radius: 3px;
+            box-shadow: 0 0.5px 1px rgba(0,0,0,0.1);
         }
+
+        /* Área de input */
         #input-area {
             display: flex;
             padding: 10px;
-            border-top: 1px solid #ccc;
+            background-color: #f0f0f0;
+            border-top: 1px solid #e0e0e0;
         }
+
         #question-input {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            font-size: 14px;
+            background-color: #f0f0f0;
         }
+
         #send-button {
             margin-left: 10px;
-            padding: 10px 15px;
-            background-color: #007bff;
+            padding: 10px 16px;
+            background-color: #00a884;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 50%;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            font-weight: bold;
         }
+
         #send-button:disabled {
-            background-color: #cccccc;
+            background-color: #959595;
             cursor: not-allowed;
         }
+
         .typing-indicator {
             align-self: flex-start;
-            background-color: #e9ecef;
-            color: #6c757d;
-            padding: 8px 12px;
-            border-radius: 8px;
+            background-color: #ffffff;
+            color: #666;
+            padding: 6px 10px;
+            border-radius: 7.5px;
             font-style: italic;
+            font-size: 14px;
+            box-shadow: 0 0.5px 1px rgba(0,0,0,0.1);
+            border-bottom-left-radius: 3px;
         }
     </style>
 </head>
 <body>
 
 <div id="chat-container">
+    <div id="chat-header">
+        <span>💬 Suporte AI</span>
+    </div>
     <div id="chat-messages">
         <div class="message bot-message">Olá! Como posso te ajudar hoje?</div>
     </div>
     <div id="input-area">
-        <input type="text" id="question-input" placeholder="Digite sua pergunta..." />
-        <button id="send-button">Enviar</button>
+        <input type="text" id="question-input" placeholder="Digite uma mensagem" />
+        <button id="send-button">➤</button>
     </div>
 </div>
 
@@ -99,18 +155,15 @@
     const questionInput = document.getElementById('question-input');
     const sendButton = document.getElementById('send-button');
 
-    // Função para adicionar uma mensagem ao chat
     function addMessage(text, isUser = false) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message');
         messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
-        // CORRIGIDO: Usa innerHTML para renderizar HTML
-        messageDiv.innerHTML = text;
+        messageDiv.textContent = text; // Usa textContent por segurança (evita XSS)
         chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight; // Rola para a última mensagem
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Função para mostrar o indicador de digitação
     function showTypingIndicator() {
         const typingDiv = document.createElement('div');
         typingDiv.classList.add('typing-indicator');
@@ -120,64 +173,45 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Função para remover o indicador de digitação
     function removeTypingIndicator() {
         const typingElement = document.getElementById('typing-indicator');
-        if (typingElement) {
-            typingElement.remove();
-        }
+        if (typingElement) typingElement.remove();
     }
 
-    // Função para enviar a pergunta para o backend
     async function sendQuestion(question) {
         if (!question.trim()) return;
 
-        addMessage(question, true); // Adiciona mensagem do usuário
-        questionInput.value = ''; // Limpa o input
-        sendButton.disabled = true; // Desabilita o botão
-        showTypingIndicator(); // Mostra o indicador
+        addMessage(question, true);
+        questionInput.value = '';
+        sendButton.disabled = true;
+        showTypingIndicator();
 
         try {
             const response = await fetch('/api/chat/question', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ question: question })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question })
             });
 
-            if (!response.ok) {
-                throw new Error(`Erro da API: ${response.status}`);
-            }
-
+            if (!response.ok) throw new Error(`Erro da API: ${response.status}`);
             const data = await response.json();
-            removeTypingIndicator(); // Remove o indicador
-            addMessage(data.answer); // Adiciona a resposta do bot
 
+            removeTypingIndicator();
+            addMessage(data.answer || 'Sem resposta.');
         } catch (error) {
-            console.error('Erro ao enviar pergunta:', error);
-            removeTypingIndicator(); // Remove o indicador
-            addMessage('Desculpe, ocorreu um erro ao processar sua pergunta. Tente novamente.');
+            console.error('Erro:', error);
+            removeTypingIndicator();
+            addMessage('Desculpe, não consegui processar sua pergunta. Tente novamente.');
         } finally {
-            sendButton.disabled = false; // Reabilita o botão
+            sendButton.disabled = false;
         }
     }
 
-    // Evento de clique no botão
-    sendButton.addEventListener('click', () => {
-        const question = questionInput.value;
-        sendQuestion(question);
-    });
-
-    // Evento de pressionar Enter no input
+    sendButton.addEventListener('click', () => sendQuestion(questionInput.value));
     questionInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const question = questionInput.value;
-            sendQuestion(question);
-        }
+        if (e.key === 'Enter') sendQuestion(questionInput.value);
     });
 
-    // Foco no input ao carregar a página
     questionInput.focus();
 </script>
 
